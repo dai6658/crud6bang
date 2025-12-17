@@ -112,7 +112,7 @@ $result = mysqli_query($con, $sql);
     <style>
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background: #f3f3f3; }
+        th { background: #050000ff; }
         .pager a { margin: 0 4px; text-decoration: none; }
         .pagination a { padding: 4px 8px; margin: 0 2px; border: 1px solid #ccc; text-decoration: none; }
         .pagination .active-page { background: #007bff; color: #fff; border-color: #007bff; }
