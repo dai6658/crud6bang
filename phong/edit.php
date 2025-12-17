@@ -1,7 +1,7 @@
 <?php include "../menu.php"; ?>
 <html>
 	<head>
-		<title>Bài tập xây dựng trang tìm kiếm với PHP & MySQL</title>
+		<title>Thao tác với danh sách phòng</title>
 		<meta charset = 'utf-8'>
 	   
 	</head>
