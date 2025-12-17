@@ -1,7 +1,7 @@
 <?php include "../menu.php"; ?>
 <html>
     <head>
-        <title>xay dung tim kiem  </title>
+        <title>Danh sách sinh viên</title>
         <meta charset ='utf-8'>
            
     </head>
