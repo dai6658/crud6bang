@@ -64,4 +64,4 @@ Sau khi hoàn thành các bước trên, bạn có thể sử dụng đầy đ�
 
 ---
 
-📌 **Ghi chú**: Đảm bảo Apache và MySQL luôn ở trạng thái *Running* khi sử dụng hệ thống.
+**Ghi chú**: Đảm bảo Apache và MySQL luôn ở trạng thái *Running* khi sử dụng hệ thống.
