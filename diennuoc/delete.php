@@ -1,10 +1,21 @@
 <?php include "../menu.php"; ?>
 <?php
-include "../db.php";
+$con = mysqli_connect("localhost", "root", "", "ktx_management");
+if (!$con) {
+    die("Không thể kết nối CSDL: " . mysqli_connect_error());
+}
 
 $ID = $_GET["ID"];
-$conn->query("DELETE FROM diennuoc WHERE ID='$ID'");
-header("Location: index.php");
+$sql = "DELETE FROM diennuoc WHERE ID='$ID'";
+
+if (mysqli_query($con, $sql)) {
+    header("Location: index.php");
+    exit();
+} else {
+    echo "Lỗi khi xóa: " . mysqli_error($con);
+}
+
+mysqli_close($con);
 ?>
 <br>
 <a href="../index.php" style="
