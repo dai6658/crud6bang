@@ -1,133 +1,116 @@
 <?php
-// Cấu hình kết nối
+
 $servername = "localhost";
-$username = "root"; // User mặc định của XAMPP
-$password = "";     // Pass mặc định của XAMPP (để trống)
+$username = "root";
+$password = "";
 
-// 1. Tạo kết nối
-$conn = new mysqli($servername, $username, $password);
+$conn = mysqli_connect($servername, $username, $password);
 
-// Kiểm tra kết nối
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
+if (!$conn) {
+    die("Kết nối thất bại: " . mysqli_connect_error());
 }
 
-// 2. Tạo Database
 $dbName = "ktx_management";
-$sqlCreateDB = "CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+$sqlCreateDB = "CREATE DATABASE IF NOT EXISTS $dbName 
+               CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
 
-if ($conn->query($sqlCreateDB) === TRUE) {
+if (mysqli_query($conn, $sqlCreateDB)) {
     echo "<h3>1. Kiểm tra Database: '$dbName' đã sẵn sàng.</h3>";
 } else {
-    die("Lỗi tạo Database: " . $conn->error);
+    die("Lỗi tạo Database: " . mysqli_error($conn));
 }
 
-// Chọn Database để làm việc
-$conn->select_db($dbName);
+mysqli_select_db($conn, $dbName);
 
-// 3. Câu lệnh SQL tạo bảng
-// Lưu ý: Sử dụng SET FOREIGN_KEY_CHECKS=0 để tránh lỗi khi tạo bảng tham chiếu đến bảng chưa tồn tại
 $sqlTableSchema = "
-SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";
+SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
 SET FOREIGN_KEY_CHECKS = 0;
 
--- Bảng Phòng (Cần tạo trước hoặc tắt check FK)
-CREATE TABLE IF NOT EXISTS `phong` (
-  `MaPhong` varchar(20) NOT NULL,
-  `LoaiPhong` varchar(50) DEFAULT NULL,
-  `SoNguoiToiDa` int(11) DEFAULT NULL,
-  `TinhTrang` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`MaPhong`)
+CREATE TABLE IF NOT EXISTS phong (
+  MaPhong varchar(20) NOT NULL,
+  LoaiPhong varchar(50),
+  SoNguoiToiDa int(11),
+  TinhTrang varchar(50),
+  PRIMARY KEY (MaPhong)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Bảng Sinh Viên
-CREATE TABLE IF NOT EXISTS `sinhvien` (
-  `MaSV` varchar(20) NOT NULL,
-  `HoTen` varchar(100) NOT NULL,
-  `NgaySinh` date NOT NULL,
-  `GioiTinh` varchar(10) DEFAULT NULL,
-  `Lop` varchar(50) DEFAULT NULL,
-  `SDT` varchar(15) DEFAULT NULL,
-  `DiaChi` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`MaSV`)
+CREATE TABLE IF NOT EXISTS sinhvien (
+  MaSV varchar(20) NOT NULL,
+  HoTen varchar(100) NOT NULL,
+  NgaySinh date NOT NULL,
+  GioiTinh varchar(10),
+  Lop varchar(50),
+  SDT varchar(15),
+  DiaChi varchar(200),
+  PRIMARY KEY (MaSV)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Bảng Điện Nước
-CREATE TABLE IF NOT EXISTS `diennuoc` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `MaPhong` varchar(20) DEFAULT NULL,
-  `Thang` varchar(20) DEFAULT NULL,
-  `SoDien` int(11) DEFAULT NULL,
-  `SoNuoc` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `MaPhong` (`MaPhong`),
-  CONSTRAINT `diennuoc_ibfk_1` FOREIGN KEY (`MaPhong`) REFERENCES `phong` (`MaPhong`)
+CREATE TABLE IF NOT EXISTS diennuoc (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  MaPhong varchar(20),
+  Thang varchar(20),
+  SoDien int(11),
+  SoNuoc int(11),
+  PRIMARY KEY (ID),
+  FOREIGN KEY (MaPhong) REFERENCES phong(MaPhong)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Bảng Hợp Đồng
-CREATE TABLE IF NOT EXISTS `hopdong` (
-  `MaHD` varchar(20) NOT NULL,
-  `MaSV` varchar(20) DEFAULT NULL,
-  `MaPhong` varchar(20) DEFAULT NULL,
-  `NgayBD` date DEFAULT NULL,
-  `NgayKT` date DEFAULT NULL,
-  `TinhTrang` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`MaHD`),
-  KEY `MaSV` (`MaSV`),
-  KEY `MaPhong` (`MaPhong`),
-  CONSTRAINT `hopdong_ibfk_1` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`),
-  CONSTRAINT `hopdong_ibfk_2` FOREIGN KEY (`MaPhong`) REFERENCES `phong` (`MaPhong`)
+CREATE TABLE IF NOT EXISTS hopdong (
+  MaHD varchar(20) NOT NULL,
+  MaSV varchar(20),
+  MaPhong varchar(20),
+  NgayBD date,
+  NgayKT date,
+  TinhTrang varchar(30),
+  PRIMARY KEY (MaHD),
+  FOREIGN KEY (MaSV) REFERENCES sinhvien(MaSV),
+  FOREIGN KEY (MaPhong) REFERENCES phong(MaPhong)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Bảng Sự Cố
-CREATE TABLE IF NOT EXISTS `suco` (
-  `MaSC` int(11) NOT NULL AUTO_INCREMENT,
-  `MaPhong` varchar(20) DEFAULT NULL,
-  `MoTa` varchar(255) DEFAULT NULL,
-  `NgayBao` date DEFAULT NULL,
-  `TrangThai` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`MaSC`),
-  KEY `MaPhong` (`MaPhong`),
-  CONSTRAINT `suco_ibfk_1` FOREIGN KEY (`MaPhong`) REFERENCES `phong` (`MaPhong`)
+CREATE TABLE IF NOT EXISTS suco (
+  MaSC int(11) NOT NULL AUTO_INCREMENT,
+  MaPhong varchar(20),
+  MoTa varchar(255),
+  NgayBao date,
+  TrangThai varchar(50),
+  PRIMARY KEY (MaSC),
+  FOREIGN KEY (MaPhong) REFERENCES phong(MaPhong)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Bảng Thanh Toán
-CREATE TABLE IF NOT EXISTS `thanhtoan` (
-  `MaTT` int(11) NOT NULL AUTO_INCREMENT,
-  `MaSV` varchar(20) DEFAULT NULL,
-  `SoTien` int(11) DEFAULT NULL,
-  `NgayTT` date DEFAULT NULL,
-  `NoiDung` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`MaTT`),
-  KEY `MaSV` (`MaSV`),
-  CONSTRAINT `thanhtoan_ibfk_1` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`)
+CREATE TABLE IF NOT EXISTS thanhtoan (
+  MaTT int(11) NOT NULL AUTO_INCREMENT,
+  MaSV varchar(20),
+  SoTien int(11),
+  NgayTT date,
+  NoiDung varchar(200),
+  PRIMARY KEY (MaTT),
+  FOREIGN KEY (MaSV) REFERENCES sinhvien(MaSV)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
 ";
 
-// 4. Thực thi tạo bảng
-if ($conn->multi_query($sqlTableSchema)) {
+if (mysqli_multi_query($conn, $sqlTableSchema)) {
     echo "<h3>2. Tạo các bảng thành công!</h3>";
-    echo "<ul>";
-    echo "<li>Bảng: phong</li>";
-    echo "<li>Bảng: sinhvien</li>";
-    echo "<li>Bảng: diennuoc</li>";
-    echo "<li>Bảng: hopdong</li>";
-    echo "<li>Bảng: suco</li>";
-    echo "<li>Bảng: thanhtoan</li>";
-    echo "</ul>";
-    
-    // Xử lý hết các result set để tránh lỗi đồng bộ
-    while ($conn->next_result()) {;} 
+    echo "<ul>
+            <li>Bảng phong</li>
+            <li>Bảng sinhvien</li>
+            <li>Bảng diennuoc</li>
+            <li>Bảng hopdong</li>
+            <li>Bảng suco</li>
+            <li>Bảng thanhtoan</li>
+          </ul>";
+
+    while (mysqli_next_result($conn)) {;}
 } else {
-    echo "Lỗi tạo bảng: " . $conn->error;
+    echo "Lỗi tạo bảng: " . mysqli_error($conn);
 }
 
-$conn->close();
+mysqli_close($conn);
 
-echo "<hr><i>Setup hoàn tất. Hãy xóa file setup.php sau khi sử dụng để bảo mật.</i>";
+echo "<hr><i>Setup hoàn tất. Hãy xoá file setup.php sau khi sử dụng để bảo mật.</i>";
 ?>
+
 <html>
-    <a href="index.php"> quay về trang chủ</a>
+    <a href="index.php">Quay về trang chủ</a>
 </html>
