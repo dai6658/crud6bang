@@ -1,4 +1,4 @@
-# CRUD6BANG – Hướng dẫn cài đặt và sử dụng
+# Hệ thống quản lý ký túc xá CRUD6BANG – Hướng dẫn cài đặt và sử dụng
 
 ## 1. Yêu cầu hệ thống
 
