@@ -73,7 +73,7 @@ for ($i = 0; $i < $soHopDongCanThem; $i++) {
     // Random tình trạng
     $TinhTrang = $tinhTrangArr[array_rand($tinhTrangArr)];
 
-    // SQL thêm hợp đồng
+    
     $sql = "INSERT INTO HopDong (MaHD, MaSV, MaPhong, NgayBD, NgayKT, TinhTrang)
             VALUES ('$MaHD', '$MaSV', '$MaPhong', '$NgayBD', '$NgayKT', '$TinhTrang')";
 
@@ -106,5 +106,3 @@ mysqli_close($con);
     font-weight: bold;
 ">Quay về danh sách</a>
 <br><br>
-```
-
