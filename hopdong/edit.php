@@ -3,7 +3,9 @@
 include "../db.php";
 
 $MaHD = $_GET['MaHD'];
-$data = $conn->query("SELECT * FROM HopDong WHERE MaHD='$MaHD'")->fetch_assoc();
+
+$result = mysqli_query($conn, "SELECT * FROM HopDong WHERE MaHD='$MaHD'");
+$data = mysqli_fetch_assoc($result);
 
 if (isset($_POST['submit'])) {
     $sql = "UPDATE HopDong SET
@@ -14,8 +16,13 @@ if (isset($_POST['submit'])) {
         TinhTrang='{$_POST['TinhTrang']}'
         WHERE MaHD='$MaHD'";
 
-    if ($conn->query($sql)) header("Location: index.php");
-    else echo "Lỗi: " . $conn->error;
+   
+    if (mysqli_query($conn, $sql)) {
+        header("Location: index.php");
+    } else {
+        
+        echo "Lỗi: " . mysqli_error($conn);
+    }
 }
 ?>
 
