@@ -4,18 +4,19 @@ $user = "root";
 $pass = "";
 $db   = "ktx_management";
 
-// Kết nối đến MySQL server (chưa chọn database)
-$conn = new mysqli($host, $user, $pass);
+$conn = mysqli_connect($host, $user, $pass);
 
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
+if (!$conn) {
+    die("Kết nối thất bại: " . mysqli_connect_error());
 }
 
-// Tạo database nếu chưa có
-$conn->query("CREATE DATABASE IF NOT EXISTS `ktx_management` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+$sqlCreateDB = "CREATE DATABASE IF NOT EXISTS `$db`
+               DEFAULT CHARACTER SET utf8mb4
+               COLLATE utf8mb4_unicode_ci";
 
-// Chọn database
-$conn->select_db($db);
+mysqli_query($conn, $sqlCreateDB);
 
-$conn->set_charset("utf8");
+mysqli_select_db($conn, $db);
+
+mysqli_set_charset($conn, "utf8");
 ?>
