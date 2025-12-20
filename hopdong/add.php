@@ -12,8 +12,13 @@ if (isset($_POST['submit'])) {
         '{$_POST['TinhTrang']}'
     )";
 
-    if ($conn->query($sql)) header("Location: index.php");
-    else echo "Lỗi: " . $conn->error;
+    
+    if (mysqli_query($conn, $sql)) {
+        header("Location: index.php");
+    } else {
+       
+        echo "Lỗi: " . mysqli_error($conn);
+    }
 }
 ?>
 
