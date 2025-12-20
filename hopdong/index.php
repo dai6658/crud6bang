@@ -53,8 +53,11 @@ SELECT MaHD FROM HopDong
 WHERE MaHD LIKE '%$q%' OR MaSV LIKE '%$q%' OR MaPhong LIKE '%$q%'
 ";
 
-$resultPage = $conn->query($sqlPage);
-$totalPage = ceil($resultPage->num_rows / $ppage);
+
+$resultPage = mysqli_query($conn, $sqlPage);
+
+
+$totalPage = ceil(mysqli_num_rows($resultPage) / $ppage);
 
 $od = isset($_GET['order']) ? $_GET['order'] : "";
 
@@ -76,7 +79,7 @@ $order
 $limit
 ";
 
-$result = $conn->query($sql);
+$result = mysqli_query($conn, $sql);
 
 echo "<table border='1' width='100%' cellpadding='8'>
 <tr>
@@ -94,7 +97,8 @@ echo "<table border='1' width='100%' cellpadding='8'>
 $stt = $start + 1;
 
 /* ========================= HIỂN THỊ BẢNG ======================= */
-while($row = $result->fetch_assoc()){
+
+while($row = mysqli_fetch_assoc($result)){
     echo "
     <tr>
         <td>$stt</td>
@@ -115,7 +119,8 @@ while($row = $result->fetch_assoc()){
 
 echo "</table>";
 
-$conn->close();
+
+mysqli_close($conn);
 ?>
 
 <br>
